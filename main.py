@@ -70,9 +70,14 @@ def on_startup():
 
 # ===== PUBLIC PAGE =====
 
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
+@app.api_route("/health", methods=["GET", "HEAD"])
+def health_check(db: Session = Depends(get_db)):
+    try:
+        db.execute(text("SELECT 1"))
+        return {"status": "ok", "database": "connected"}
+    except Exception as e:
+        return {"status": "error", "database": str(e)}
+
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request, db: Session = Depends(get_db)):
