@@ -70,6 +70,10 @@ def on_startup():
 
 # ===== PUBLIC PAGE =====
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request, db: Session = Depends(get_db)):
     services = db.query(Service).all()
